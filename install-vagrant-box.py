@@ -128,7 +128,7 @@ config.vm.define "logger" do |cfg|
       vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
     end
     
-{ define: "logger,
+{ logger: {
 cfg: {
   box: "bento/ubuntu-18.04",
   hostname: "logger",
@@ -147,8 +147,11 @@ cfg: {
   ["setextradata", "global", "GUI/SuppressMessages", "all" ]]
   }
 }
+} ,
+amaurymangedeslimaces:{
+    
 }
-  
+}
 """
 
 
