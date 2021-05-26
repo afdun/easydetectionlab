@@ -1,12 +1,11 @@
 import os
 import sys
+import json
+import ast
+import tkinter as tk
+from tkinter import filedialog
 
-#add
-#supp
-#del
-#save
-
-"""
+#Test variable
 json_file = {
     "logger": 
     {
@@ -30,7 +29,7 @@ json_file = {
             }
         }
     },
-    "TESTamaurymangedeslimaces":
+    "TESTamaury":
     {
         "cfg": 
         {
@@ -73,98 +72,59 @@ json_file = {
             ["setextradata", "global", "GUI/SuppressMessages", "all" ]]
             }
         }
-    
     }
 }
+
+"""
+for i in json_file:
+    print(i)
+    print(json_file.get(i))
+print()
 """
 
-json_file = {
-    "logger": 
-    {
-    "cfg": 
-        {
-        "box": "bento/ubuntu-18.04",
-        "hostname": "logger",
-        "provision": [("shell", "logger_bootstrap.sh")],
-        "network": [(":private_network"), ("ip", "192.168.38.105"), ("gateway","192.168.38.1"), ("dns","8.8.8.8")],
-        "provider": "virtualbox", "vb": 
-            {
-            "gui": "true",
-            "name": "logger",
-            "customize": [["modifyvm", ":id", "--memory", 1024],
-            ["modifyvm", ":id", "--cpus", 1],
-            ["modifyvm", ":id", "--vram", "32"],
-            ["modifyvm", ":id", "--nicpromisc2", "allow-all"],
-            ["modifyvm", ":id", "--clipboard", "bidirectional"],
-            ["modifyvm", ":id", "--natdnshostresolver1", "on"],
-            ["setextradata", "global", "GUI/SuppressMessages", "all" ]]
-            }
-        }
-    },
-    "TESTamaurymangedeslimaces":
-    {
-        "cfg": 
-        {
-        "box": "splunk/ubuntu-20",
-        "hostname": "logger",
-        "provision": [("shell", "logger_bootstrap.sh")],
-        "network": [(":private_network"), ("ip", "192.168.38.106"), ("gateway","192.168.38.1"), ("dns","8.8.8.8")],
-        "provider": "virtualbox", "vb": 
-            {
-            "gui": "true",
-            "name": "logger",
-            "customize": [["modifyvm", ":id", "--memory", 1024],
-            ["modifyvm", ":id", "--cpus", 1],
-            ["modifyvm", ":id", "--vram", "32"],
-            ["modifyvm", ":id", "--nicpromisc2", "allow-all"],
-            ["modifyvm", ":id", "--clipboard", "bidirectional"],
-            ["modifyvm", ":id", "--natdnshostresolver1", "on"],
-            ["setextradata", "global", "GUI/SuppressMessages", "all" ]]
-            }
-        }
-    },
-    "TEST":
-    {
-        "cfg": 
-        {
-        "box": "hashicorp/ubuntu-18.04",
-        "hostname": "logger",
-        "provision": [("shell", "logger_bootstrap.sh")],
-        "network": [(":private_network"), ("ip", "192.168.38.107"), ("gateway","192.168.38.1"), ("dns","8.8.8.8")],
-        "provider": "virtualbox", "vb": 
-            {
-            "gui": "true",
-            "name": "logger",
-            "customize": [["modifyvm", ":id", "--memory", 1024],
-            ["modifyvm", ":id", "--cpus", 1],
-            ["modifyvm", ":id", "--vram", "32"],
-            ["modifyvm", ":id", "--nicpromisc2", "allow-all"],
-            ["modifyvm", ":id", "--clipboard", "bidirectional"],
-            ["modifyvm", ":id", "--natdnshostresolver1", "on"],
-            ["setextradata", "global", "GUI/SuppressMessages", "all" ]]
-            }
-        }
-    
-    }
-}
-
-# input retourne une chaîne vide pour "Entrée"
+# Values to check the input of the user
 yes = {'ou','o', 'oui', ''}
 no = {'non','n', 'no'}
 
+# GUI
+root = tk.Tk()
+root.withdraw()
+
+def choose_box_configuration():
+    #Choose the configuration file to open
+    input("Le chemin absolu du dossier contenant le fichier de configuration de la box à intégrer (chemin/nom-répertoire-parent/nom-fichier) va vous être demandé. ENTER pour ouvrir l'interface de choix.")
+    configFile = filedialog.askopenfilename(filetypes = [("JSON file", ".json")])
+    print("Fichier choisi : " + configFile)
+    
+    #Confirm location entered
+    os.system("clear")
+    confirmation = input("Fichier à valider : " + configFile + "\nConfirmation ? (y/n) ")
+    if confirmation.lower() != "y":
+        print("Annulation des données rentrées précédemment...")
+        print("Relance du processus de saisie...")
+        return chooseBoxConfiguration()
+    else:
+        return configFile
+
 def add_boxes():
-    print("add boxes") 
+    configFile = choose_box_configuration()
+    with open(configFile, "r") as fichier:
+	    contentFile = fichier.read()
+    # Clean file content
+    strContentFile = str(contentFile).replace("\\n","").replace("'", "").replace(" ","")
+    # Transform string to dict
+    res = ast.literal_eval(strContentFile)
+    # Add to the json_file variable to generate new Vagrantfile
+    for i in res:
+        json_file[i] = res.get(i)
 
 def delete_boxes():
-    print("delete boxes")
     existing_boxes = []
-
     for key, value in json_file.items():
-        existing_boxes.append(key)        
+        existing_boxes.append(key)
 
     for box in existing_boxes:
         not_valid = True
-        #print(box)
         while not_valid:
             print("Voulez-vous supprimer la box \"" + box + "\" ? o pour oui, n pour non")
             choice = input().lower()
@@ -172,7 +132,6 @@ def delete_boxes():
                 json_file.pop(box)
                 not_valid = False
             elif choice in no:
-                #print(box + " ne sera pas supprimée\n")
                 not_valid = False
             else:
                 sys.stdout.write("Merci de répondre par 'oui' ou 'non'\n\n")
@@ -180,31 +139,28 @@ def delete_boxes():
     for key, value in json_file.items():
         print(key)
 
+"""
 def check_file_name(file_name):
-    characters = [" ", "é", "è", "/", "\"", "à", "ù", "'"]
+    alphaLow = "abcdefghijklmnopqrstuvwxyz"
+    alphaUp = alphaLow.upper()
+    num = "1234567890"
+    charAllowed = alphaLow+alphaUp+num
     for a in file_name:
-        if a in characters:
+        if a not in charAllowed:
             return False
     return True
-    
+"""
+   
 def save_infra():
-    #sauvegarder la variable json_file dans un fichier .json dans un certain répertoire -> voir avec Amaury
-    print("save infra")
-    print("Comment voulez-vous nommer la sauvegarde ? (attention à ne pas mettre d'espace ou de caractères spéciaux)")
-    not_valid = True
-    while(not_valid):
-        file_name = input()
-        if check_file_name(file_name):
-            not_valid = False
-            #est-ce qu'on check si le fichier existe déjà ? lui demande s'il veut vraiment écraser ?
-        else:
-            print("Nom de fichier incorrect, ne pas mettre d'espace ou de caractères spéciaux")
-    
-    with open(file_name+".json", "w") as fichier:
-	    fichier.write(str(json_file))
-    
+    #Choose the name and location for the save
+    input("Le nom de la sauvegarde ainsi que le chemin absolu du dossier dans lequel vous voulez sauvegarder l'infrastructure (chemin/nom-répertoire-parent/nom-fichier) va vous être demandé. ENTER pour ouvrir l'interface de choix.")
+    destinationSave = filedialog.asksaveasfilename(defaultextension='.json', filetypes=[("json files", '*.json')], title="Choisir nom et emplacement du fichier")
+    print("Chemin choisi : " + destinationSave)
+    with open(destinationSave, "w") as fichier:
+	    fichier.write(json.dumps(json_file, indent=2))
+
 def destroy_infra():
-    print("destroy_infra")
+    print("TODO destroy_infra")
     #Trouver la ligne de commande à taper ici du style
     #os.system("cd attack_range_local;source venv/bin/activate;python3 attack_range_local.py -a build")
 
