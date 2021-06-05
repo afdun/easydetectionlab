@@ -136,58 +136,60 @@ end
 
 
 
-def getInfra(fileName):
+def getJSON(fileName):
     with open(fileName) as jsonFile:
         infraJSON = json.load(jsonFile)
     return infraJSON
 
-def setInfra(vagrantfile):
-    with open('VagrantFile','w') as VagrantFile:
-        VagrantFile.write(vagrantfile)
-    return VagrantFile.closed
+def setVAGRANTFILE(vagrantFileName, vagrantText):
+    with open(vagrantFileName,'w') as vagrantFile:
+        vagrantFile.write(vagrantText)
+    return vagrantFile.closed
 
-def readJSON(textJSON):
+def printJSON(textJSON):
     print(json.dumps(textJSON,indent=2))
 
-def configVM(name,config,vagrantfile):
-    vagrantfile += "  config.vm.define {} do |cfg|\n".format(name)
+def configVM(name,config,vagrantFile):
+    vagrantFile += "  config.vm.define {} do |cfg|\n".format(name)
     for cfg,value in config.items():
         for vm,value2 in value.items():
             for setting,value3 in value2.items():
                 if setting == "provision" or setting == "network":
                     for i in value3:
-                        vagrantfile += 4*' '+'.'.join((cfg,vm,setting))+' '+i+'\n'
+                        vagrantFile += 4*' '+'.'.join((cfg,vm,setting))+' '+i+'\n'
                 elif setting == "vb":
                     for settingVB,value4 in value3.items():
                         if settingVB != "customize":
-                            vagrantfile += 6*' '+'.'.join((setting,settingVB))+' = '+value4+'\n'
+                            vagrantFile += 6*' '+'.'.join((setting,settingVB))+' = '+value4+'\n'
                         else:
                             for i in value4:
-                                vagrantfile += 6*' '+'.'.join((setting,settingVB))+' '+i+'\n'
-                    vagrantfile += 4*' '+"end\n"
+                                vagrantFile += 6*' '+'.'.join((setting,settingVB))+' '+i+'\n'
+                    vagrantFile += 4*' '+"end\n"
                 elif setting == "provider":
-                    vagrantfile += 4*' '+'.'.join((cfg,vm,setting))+' '+value3+' do |vb, override|\n'
+                    vagrantFile += 4*' '+'.'.join((cfg,vm,setting))+' '+value3+' do |vb, override|\n'
                 else:
-                    vagrantfile += 4*' '+'.'.join((cfg,vm,setting))+' = '+value3+'\n'
-    vagrantfile += "  end\n"
-    return vagrantfile
+                    vagrantFile += 4*' '+'.'.join((cfg,vm,setting))+' = '+value3+'\n'
+    vagrantFile += "  end\n"
+    return vagrantFile
 
 
 """
     Function that converts the JSON infrastructure in a VagrantFile
     @return result : boolean (True if successfully created VagrantFile, False else)
 """
-def convertJSONtoVAGRANTFILE():
-    vagrantfile = "Vagrant.configure('2') do |config|\n"
-    infraJSON = getInfra('infra.json')
+def convertJSONtoVAGRANTFILE(jsonFile):
+    vagrantFile = "Vagrant.configure('2') do |config|\n"
+    infraJSON = getJSON('infra.json')
     for nameVM, config in infraJSON.items():
-        vagrantfile = configVM(nameVM,config,vagrantfile)
-    vagrantfile += "end\n"
-    print(vagrantfile)
-    result = setInfra(vagrantfile)
-    print("Successfully created VagrantFile" if result else "Cannot created VagrantFile")
-    return result
+        vagrantFile = configVM(nameVM,config,vagrantFile)
+    vagrantFile += "end\n"
+    return vagrantFile
 
 if __name__ == "__main__":
-    # readJSON(dic)
-    convertJSONtoVAGRANTFILE()
+    # printJSON(dic)
+    jsonFile = "infra.json"
+    vagrantFileName = "VagrantFile"
+    vagrantText = convertJSONtoVAGRANTFILE(jsonFile)
+    print(vagrantText)
+    result = setVAGRANTFILE(vagrantFileName, vagrantText)
+    print("Ecriture du fichier ", vagrantFileName, " : ", result)
