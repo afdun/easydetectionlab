@@ -136,8 +136,8 @@ end
 
 
 
-def getInfra():
-    with open('infra.json') as jsonFile:
+def getInfra(fileName):
+    with open(fileName) as jsonFile:
         infraJSON = json.load(jsonFile)
     return infraJSON
 
@@ -173,16 +173,21 @@ def configVM(name,config,vagrantfile):
     return vagrantfile
 
 
-
-def main():
+"""
+    Function that converts the JSON infrastructure in a VagrantFile
+    @return result : boolean (True if successfully created VagrantFile, False else)
+"""
+def convertJSONtoVAGRANTFILE():
     vagrantfile = "Vagrant.configure('2') do |config|\n"
-    infraJSON = getInfra()
+    infraJSON = getInfra('infra.json')
     for nameVM, config in infraJSON.items():
         vagrantfile = configVM(nameVM,config,vagrantfile)
     vagrantfile += "end\n"
     print(vagrantfile)
-    print("Successfully created VagrantFile" if setInfra(vagrantfile) else "Cannot created VagrantFile")
+    result = setInfra(vagrantfile)
+    print("Successfully created VagrantFile" if result else "Cannot created VagrantFile")
+    return result
 
 if __name__ == "__main__":
     # readJSON(dic)
-    main()
+    convertJSONtoVAGRANTFILE()
