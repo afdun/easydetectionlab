@@ -53,26 +53,7 @@ def configVM(name,config,vagrantText):
 
     @return `jsonFile.closed`: boolean (True if the json file successfully closed else False)
     """
-    vagrantText += "  config.vm.define {} do |cfg|\n".format(name)
-    for cfg,value in config.items():
-        for vm,value2 in value.items():
-            for setting,value3 in value2.items():
-                if setting == "provision"::
-                    for i in value3:
-                        vagrantText += 4*' '+'.'.join((cfg,vm,setting))+' '+i+'\n'
-                elif setting == "vb":
-                    for settingVB,value4 in value3.items():
-                        if settingVB != "customize":
-                            vagrantText += 6*' '+'.'.join((setting,settingVB))+' = '+value4+'\n'
-                        else:
-                            for i in value4:
-                                vagrantText += 6*' '+'.'.join((setting,settingVB))+' '+i+'\n'
-                    vagrantText += 4*' '+"end\n"
-                elif setting == "provider":
-                    vagrantText += 4*' '+'.'.join((cfg,vm,setting))+' '+value3+' do |vb, override|\n'
-                else:
-                    vagrantText += 4*' '+'.'.join((cfg,vm,setting))+' = '+value3+'\n'
-    vagrantText += "  end\n"
+    
     return vagrantText
 
 def convertJSONtoVAGRANTFILE(jsonFileName):
@@ -82,7 +63,7 @@ def convertJSONtoVAGRANTFILE(jsonFileName):
 
     @return `vagrantText`: string with the converted vagrant text
     """
-    jsonText = getJSON('infra.json')
+    jsonText = getJSON(jsonFileName)
     vagrantText = ""
     if "intro" in jsonText:
         for line in jsonText["intro"]:
@@ -91,7 +72,28 @@ def convertJSONtoVAGRANTFILE(jsonFileName):
     for nameVM, config in jsonText.items():
         if nameVM == "intro":
             continue
-        vagrantText = configVM(nameVM,config,vagrantText)
+        
+        vagrantText += "  config.vm.define {} do |cfg|\n".format(nameVM)
+        for cfg,value in config.items():
+            for vm,value2 in value.items():
+                for setting,value3 in value2.items():
+                    if setting == "provision":
+                        for i in value3:
+                            vagrantText += 4*' '+'.'.join((cfg,vm,setting))+' '+i+'\n'
+                    elif setting == "vb":
+                        for settingVB,value4 in value3.items():
+                            if settingVB != "customize":
+                                vagrantText += 6*' '+'.'.join((setting,settingVB))+' = '+value4+'\n'
+                            else:
+                                for i in value4:
+                                    vagrantText += 6*' '+'.'.join((setting,settingVB))+' '+i+'\n'
+                        vagrantText += 4*' '+"end\n"
+                    elif setting == "provider":
+                        vagrantText += 4*' '+'.'.join((cfg,vm,setting))+' '+value3+' do |vb, override|\n'
+                    else:
+                        vagrantText += 4*' '+'.'.join((cfg,vm,setting))+' = '+value3+'\n'
+        vagrantText += "  end\n"
+        
     vagrantText += "end\n"
     return vagrantText
 
