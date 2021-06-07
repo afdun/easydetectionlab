@@ -38,15 +38,15 @@ def choose_current_infra():
     not_valid = True
     not_valid_2 = True
     while not_valid:
-        print("Voulez-vous :\n1.Installer Detection Lab\n2.Vérifier configuration requise\n3. Charger l'infrastructure par défaut\n4. Importer un fichier\n5. Quitter")
+        print("Voulez-vous :\n1. Installer Detection Lab\n2. Vérifier configuration requise\n3. Charger l'infrastructure par défaut\n4. Importer une infrastructure existante\n5. Quitter")
         choice = input().lower()
         if choice == '1': #Install DetectionLab
             os.system("git clone https://github.com/clong/DetectionLab.git")
-            not_valid = False
+            #not_valid = False
         elif choice == '2': # Check required configuration
-            os.system("./DetectionLab/Vagrant/prepare.sh")
+            os.system("sudo ./DETECTIONLAB/DetectionLab/Vagrant/prepare.sh")
             print()
-            not_valid = False
+            #not_valid = False
         elif choice == '3': # Default infrastructure
             print("\nChargement de l'infrastructure par défaut.")
             #CHANGER AVEC LE NOM DU FICHIER AVEC L'INFRA PAR DEFAUT
@@ -585,4 +585,5 @@ def modify_infra():
         except ValueError:
             print("Merci d'entrer une option valide\n")
 
-modify_infra()
+if __name__ == "__main__":
+    modify_infra()
