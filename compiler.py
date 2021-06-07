@@ -1,4 +1,6 @@
-
+"""
+This compiler converts a jsonFile to a VagrantFile.
+"""
 
 # IMPORT
 import json

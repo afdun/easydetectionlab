@@ -117,17 +117,9 @@ def convertVAGRANTFILEtoJSON(vagrantFileName):
                     jsonText[nameVM] = { "cfg" : {}}
                     newVM = jsonText[nameVM]["cfg"]
 
-            # if line.startswith("cfg.winrm",indent):
-            #     regex = re.compile("cfg.")
-            #     matchObject = regex.search(line)
-            #     if matchObject:
-            #         nameVM = matchObject.group(0).strip()
-            #         jsonText[nameVM] = { "cfg" : {}}
-            #         newVM = jsonText[nameVM]["cfg"]
 
             if line.startswith("cfg.",indent):
                 regex = re.compile("cfg\.((?:vm)?(?:winrm)?)\.(\w+)[\s\=]+(.+)")
-                # regex = re.compile("cfg\.vm\.(\w+)[\s\=]+(.+)")
                 matchObject = regex.search(line)
 
                 if matchObject:
