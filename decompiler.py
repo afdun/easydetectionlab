@@ -137,7 +137,7 @@ def convertVAGRANTFILEtoJSON(vagrantFileName):
                             newVB = newVM[vmOrWinrm]["vb"]
                     else:
                         if nameParamVM == "provision":
-                            if nameParamVM not in newVM:
+                            if nameParamVM not in newVM[vmOrWinrm]:
                                 newVM[vmOrWinrm][nameParamVM] = [paramVM]
                             else:
                                 newVM[vmOrWinrm][nameParamVM].append(paramVM)
