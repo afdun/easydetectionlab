@@ -159,7 +159,7 @@ def choose_box_configuration():
     """
 
     error = False
-    input("\nLe chemin absolu du dossier contenant le fichier de configuration à intégrer (chemin/nom-répertoire-parent/nom-fichier) va vous être demandé. ENTER pour ouvrir l'interface de choix.")
+    input("\nSélectionner le fichier à importer. ENTER pour ouvrir l'interface de choix.")
     try: # Choose a file location
         configFile = filedialog.askopenfilename(title = "Choisir le fichier à ouvrir")
         print("\nFichier choisi : " + configFile)
@@ -220,11 +220,11 @@ def enter_new_box():
 
     error = False
     try:
-        input("\nLe chemin absolu du dossier contenant les fichiers de la box à intégrer (chemin/nom-répertoire-parent) va vous être demandé. ENTER pour ouvrir l'interface de choix.")
+        input("\nSélectionner le dossier contenant les fichiers de la box à importer. ENTER pour ouvrir l'interface de choix.")
         start_path = filedialog.askdirectory() #Enter new box repository
         print("\nChemin choisi : "+start_path)
 
-        input("\nLe chemin absolu du dossier contenant les boxes vagrant officielles (chemin/) va vous être demandé. ENTER pour ouvrir l'interface de choix.")
+        input("\nSélectionner le dossier contenant les boxes vagrant officielles. ENTER pour ouvrir l'interface de choix.")
         end_path = filedialog.askdirectory() #Enter Vagrant boxes repository
         print("\nChemin choisi : "+end_path)
     except:
@@ -295,49 +295,18 @@ def create_new_box(start_path,end_path,version):
 
 def add_boxes():
     """
-    Add a new box to the current infrastructure.
-    1. If not already imported, move the new box to the current Vagrant box repository
-    2. Choose the configuration file for the new box
+    Add a new box to the current Vagrant boxes folder.
 
     @param: No parameters
     
     @return: No return
     """
 
-    error = False
-    not_valid = True
-    #Choose new box if not already imported
-    while not_valid:
-        print("\nVotre box est-elle déjà présente dans le fichier des boxes Vagrant ? o pour oui, n pour non")
-        choice = input().lower()
-        if choice in yes: # Box already imported
-            not_valid = False
-        elif choice in no: # Box not imported
-            (start_path,end_path,version) = enter_new_box() # Enter information about the new box to add
-            if(start_path == "null"): # Problem in the file location selection: stop
-                error = True
-            else:
-                create_new_box(start_path,end_path,version) # Create new box
-            not_valid = False
-        else:
-            sys.stdout.write("Merci de répondre par 'oui' ou 'non'\n\n")
-
-    # Choose new box configuration file
-    if error == False:
-        json_file = read_infra() # current infrastructure
-        configFile = choose_box_configuration() # choose new box configuration file
-        if configFile != "null": # no error in location selection
-            with open(configFile, "r") as fichier:
-                contentFile = fichier.read()
-            strContentFile = str(contentFile).replace("\\n","").replace("'", "").replace(" ","") # Clean file content
-            try: # Transform string to dict
-                res = ast.literal_eval(strContentFile) # Convert it to JSON
-                for i in res:
-                    json_file[i] = res.get(i) # Add entry to dictionary variable
-                print("\nInfrastructure modifiée avec succès.")
-                update_infra(current_path_auto_save, json_file) # save new infrastructure
-            except SyntaxError:
-                print("\nProblème de syntaxe dans le fichier json importé. Infrastructure non modifiée.")
+    (start_path,end_path,version) = enter_new_box() # Enter information about the new box to add
+    if(start_path == "null"): # Problem in the file location selection: stop
+        print("Pas de modifications effectuées.")
+    else:
+        create_new_box(start_path,end_path,version) # Create new box
 
 def delete_boxes():
     """
@@ -381,7 +350,7 @@ def save_infra():
     global current_path_save
     error = False
     json_file = read_infra() # current infrastructure
-    input("\nLe nom de la sauvegarde ainsi que le chemin absolu du dossier dans lequel vous voulez sauvegarder l'infrastructure (chemin/nom-répertoire-parent/nom-fichier) va vous être demandé. ENTER pour ouvrir l'interface de choix.")
+    input("\nChoisissez le nom et l'emplacement de la sauvegarde. ENTER pour ouvrir l'interface de choix.")
     
     try: # choose the name and location for the save
         destinationSave = filedialog.asksaveasfilename(defaultextension='.json', filetypes=[("json files", '*.json')], title="Choisir nom et emplacement du fichier")
@@ -543,7 +512,7 @@ def check_infra():
     vagrantText = convertJSONtoVAGRANTFILE(current_path_auto_save) # Convert to Vagrant File representation
     result = setVAGRANTFILE("VagrantFile", vagrantText) # Create Vagrant File
     print("\nVotre fichier Vagrant File a bien été validé et créé.\n")
-    print("Après la fermeture de ce programme, vous pourrez utiliser les commandes suivantes pour intéragir avec elle :")
+    print("Après la fermeture de ce programme, vous pourrez utiliser les commandes suivantes depuis l'emplacement 'DETECTIONLAB/DetectionLab/Vagrant' pour intéragir avec elle :")
     print("'Vagrant up' pour la lancer\n'Vagrant restart' pour la redémarrer\n'Vagrant stop' pour la stopper")
     exit()
 

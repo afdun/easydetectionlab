@@ -5,7 +5,7 @@
     "#MISP_ENV = ENV['MISP_ENV'] || 'dev'\n",
     "MISP_ENV = 'demo'\n"
   ],
-  "\"dc\"": {
+  "\"DomainController\"": {
     "cfg": {
       "vm": {
         "box": "\"detectionlab/win2016\"",
