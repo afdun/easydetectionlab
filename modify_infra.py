@@ -510,7 +510,7 @@ def check_infra():
     """
 
     vagrantText = convertJSONtoVAGRANTFILE(current_path_auto_save) # Convert to Vagrant File representation
-    result = setVAGRANTFILE("VagrantFile", vagrantText) # Create Vagrant File
+    result = setVAGRANTFILE("DETECTIONLAB/DetectionLab/Vagrant/VagrantFile", vagrantText) # Create Vagrant File
     print("\nVotre fichier Vagrant File a bien été validé et créé.\n")
     print("Après la fermeture de ce programme, vous pourrez utiliser les commandes suivantes depuis l'emplacement 'DETECTIONLAB/DetectionLab/Vagrant' pour intéragir avec elle :")
     print("'Vagrant up' pour la lancer\n'Vagrant restart' pour la redémarrer\n'Vagrant stop' pour la stopper")
