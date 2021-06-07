@@ -10,7 +10,7 @@ from tkinter import filedialog
 # AJOUTER OPTION VAGRANT DEBUT dans choose_current_infra -> Amaury
 # fonction launch_infra -> Amaury
 # COMMENTAIRES launch_infra, get_input, copytree, create_new_box -> Amaury
-# PREPARE.SH -> à voir
+# PREPARE.SH -> à check
 # CREER FICHIER JSON INFRA PAR DEFAUT ET CHANGER VALEUR dans choose_current_infra -> Amaury a le fichier
 
 # Global variables that contains the path to the saves
@@ -29,8 +29,9 @@ def choose_current_infra():
     """
     Choose the file that contains the infrastructure (JSON or Vagrant File) that we want to load.
 
-    :param: No parameters
-    :return choose_current_infra: Only if no file was selected. A file must be selected for the next parts to work.
+    @param: No parameters
+
+    @return `function choose_current_infra`: Only if no file was selected. A file must be selected for the next parts to work.
     """
 
     global current_path_save
@@ -82,8 +83,9 @@ def load_infra():
     2. Check syntax
     3. Create the auto save file
 
-    :param: No parameters
-    :return: No return
+    @param: No parameters
+
+    @return: No return
     """
     
     with open(current_path_save, "r") as outputFile: # Read file of the chosen infrastructure
@@ -106,8 +108,9 @@ def read_infra():
     2. Check syntax
     3. Create JSON dictionary
 
-    :param: No parameters
-    :return json_file: Dictionary containing the current infrastructure 
+    @param: No parameters
+
+    @return `json_file`: Dictionary containing the current infrastructure 
     """
 
     json_file = {}
@@ -131,8 +134,9 @@ def update_infra(json_file):
     2. Check syntax
     3. Create JSON dictionary
 
-    :param json_file: Dictionary containing the current infrastructure
-    :return: No return
+    @param `json_file`: Dictionary containing the current infrastructure
+
+    @return: No return
     """
    
     with open(current_path_auto_save, "w") as outputFile: # Update the auto save file with json_file modifications
@@ -142,10 +146,13 @@ def choose_box_configuration():
     """
     Choose the box configuration file to open.
 
-    :param: No parameters
-    :return choose_box_configuration(): call to the function in case the user was wrong in his input
-    :return configFile: the path to the configuration file to open
-    :return null: means that an error occured in the function and that the code will stop
+    @param: No parameters
+
+    @return `function choose_box_configuration`: call to the function in case the user was wrong in his input
+    
+    @return `configFile`: the path to the configuration file to open
+    
+    @return `null`: means that an error occured in the function and that the code will stop
     """
 
     error = False
@@ -175,11 +182,15 @@ def get_input(question, option="False",error="Veuillez entrer le format attendu 
     """
     
 
-    :param question:  
-    :param option: 
-    :param error: 
-    :return get_input(): 
-    :return entry_input: 
+    @param `question`:  
+    
+    @param `option`: 
+    
+    @param `error`: 
+    
+    @return `function get_input`: 
+    
+    @return `entry_input`: 
     """
 
     entry_input = input(question)
@@ -196,10 +207,13 @@ def enter_new_box():
     2. Select path containing the other Vagrant boxes
     3. Enter information about the new box (name, version)
 
-    :param: No parameters
-    :return enter_new_box(): call to the function in case the user was wrong in his input
-    :return (start_path,end_path,box_version): information needed to create tree structure
-    :return null: means that an error occured in the function and that the code will stop
+    @param: No parameters
+    
+    @return `function enter_new_box`: call to the function in case the user was wrong in his input
+    
+    @return `(start_path,end_path,box_version)`: information needed to create tree structure
+    
+    @return `null`: means that an error occured in the function and that the code will stop
     """
 
     error = False
@@ -237,11 +251,15 @@ def copytree(src, dst, symlinks=False, ignore=None):
     """
     
 
-    :param src: 
-    :param dst:
-    :param symlinks:
-    :param ignore:
-    :return: No return
+    @param `src`: 
+    
+    @param `dst`:
+    
+    @param `symlinks`:
+    
+    @param `ignore`:
+    
+    @return: No return
     """
 
     for item in os.listdir(src):
@@ -257,10 +275,13 @@ def create_new_box(start_path,end_path,version):
     """
     Create the tree structure for the new Vagrant box and move files to the Vagrant boxes repository.
 
-    :param start_path: location of the new box to add
-    :param end_path: location of the other vagrant boxes
-    :param version: version of the new box to add
-    :return: No return
+    @param `start_path`: location of the new box to add
+    
+    @param `end_path`: location of the other vagrant boxes
+    
+    @param `version`: version of the new box to add
+    
+    @return: No return
     """
 
     print("\nCréation de l'arborescence... ",end="")
@@ -278,8 +299,9 @@ def add_boxes():
     1. If not already imported, move the new box to the current Vagrant box repository
     2. Choose the configuration file for the new box
 
-    :param: No parameters
-    :return: No return
+    @param: No parameters
+    
+    @return: No return
     """
 
     error = False
@@ -323,8 +345,9 @@ def delete_boxes():
     1. Select the box(es) to delete
     2. Delete entries from the JSON dictionary
 
-    :param: No parameters
-    :return: No return
+    @param: No parameters
+    
+    @return: No return
     """
 
     json_file = read_infra() # current infrastructure
@@ -349,8 +372,9 @@ def save_infra():
     """
     Save the current infrastructure as a JSON file at a chosen location.
 
-    :param: No parameters
-    :return: No return
+    @param: No parameters
+    
+    @return: No return
     """
 
     global current_path_save
@@ -375,8 +399,9 @@ def destroy_infra():
     """
     The latest save file is deleted.
 
-    :param: No parameters
-    :return: No return
+    @param: No parameters
+    
+    @return: No return
     """
 
     global current_path_save
@@ -400,9 +425,11 @@ def compile_vagrant(txt_edit,txt_edit_vagrant):
     """
     In the tkinter window, transform JSON representation into Vagrant file representation.
 
-    :param txt_edit: Text tkinter widget that contains the JSON representation
-    :param txt_edit_vagrant: Text tkinter widget that contains the Vagrant file representation
-    :return: No return
+    @param `txt_edit`: Text tkinter widget that contains the JSON representation
+    
+    @param `txt_edit_vagrant`: Text tkinter widget that contains the Vagrant file representation
+    
+    @return: No return
     """
 
     text = txt_edit.get(1.0, tk.END) # Read text from the left panel of the editor 
@@ -419,8 +446,9 @@ def edit_infra():
     1. Edit the JSON file of the current infrastructure
     2. Transform into Vagrant file representation
 
-    :param: No parameters
-    :return: No return
+    @param: No parameters
+   
+    @return: No return
     """
 
     json_file = read_infra() # current infrastructure
@@ -452,8 +480,9 @@ def display_infra():
     """
     Open a tkinter window that displays the content of the current infrastructure.
 
-    :param: No parameters
-    :return: No return
+    @param: No parameters
+    
+    @return: No return
     """
 
     json_file = read_infra() # current infrastructure
@@ -479,8 +508,9 @@ def launch_infra():
     """
     
 
-    :param: No parameters
-    :return: No return
+    @param: No parameters
+    
+    @return: No return
     """
 
     print("Lancer infra")
@@ -489,8 +519,9 @@ def quit_program():
     """
     Exit the program.
 
-    :param: No parameters
-    :return: No return
+    @param: No parameters
+    
+    @return: No return
     """
 
     print("Fermeture du programme")
@@ -500,8 +531,9 @@ def menu(arg):
     """
     Select the function to execute.
 
-    :param arg: The number of the function to call
-    :return: No return
+    @param `arg`: The number of the function to call
+    
+    @return: No return
     """
 
     switcher = {
@@ -521,8 +553,9 @@ def modify_infra():
     """
     Main function which presents the menu and calls the different functions.
 
-    :param: No parameters
-    :return: No return
+    @param: No parameters
+    
+    @return: No return
     """
 
     print("\n-----------------------------------------------------------")
