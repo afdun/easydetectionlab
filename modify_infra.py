@@ -5,17 +5,16 @@ import json
 import ast
 import tkinter as tk
 from tkinter import filedialog
+from compiler import convertJSONtoVAGRANTFILE, setVAGRANTFILE
+from decompiler import convertVAGRANTFILEtoJSON, setJSON
 
-#TO DO
-# AJOUTER OPTION VAGRANT DEBUT dans choose_current_infra -> Amaury
-# fonction launch_infra -> Amaury
-# COMMENTAIRES launch_infra, get_input, copytree, create_new_box -> Amaury
-# PREPARE.SH -> à check
+# COMMENTAIRES get_input, copytree, create_new_box -> Amaury
 # CREER FICHIER JSON INFRA PAR DEFAUT ET CHANGER VALEUR dans choose_current_infra -> Amaury a le fichier
 
 # Global variables that contains the path to the saves
 current_path_save = ""
 current_path_auto_save = "Saves/autoSave/autoSave.json"
+current_path_auto_save_tmp = "Saves/autoSave/autoSaveTmp.json"
 
 # Values to check the input of the user
 yes = {'ou','o', 'oui', '', 'yes', 'y'}
@@ -42,28 +41,34 @@ def choose_current_infra():
         choice = input().lower()
         if choice == '1': #Install DetectionLab
             os.system("git clone https://github.com/clong/DetectionLab.git")
-            #not_valid = False
         elif choice == '2': # Check required configuration
-            os.system("sudo ./DETECTIONLAB/DetectionLab/Vagrant/prepare.sh")
+            input("Soyez sûr que DETECTIONLAB/DetectionLab/Vagrant/prepare.sh ait bien les droits d'exécution (chmod u+x prepare.sh). ENTER pour continuer")
+            os.system("./DETECTIONLAB/DetectionLab/Vagrant/prepare.sh")
             print()
-            #not_valid = False
         elif choice == '3': # Default infrastructure
             print("\nChargement de l'infrastructure par défaut.")
             #CHANGER AVEC LE NOM DU FICHIER AVEC L'INFRA PAR DEFAUT
-            current_path_save = "Saves/rien1.json"
+            current_path_save = "Saves/infra.json"
             not_valid = False
         elif choice == '4': # Import file
             while not_valid_2:
-                print("\nVoulez-vous :\n1. Charger un Vagrant file ?\n2. Charger un fichier JSON ?")
+                print("\nVoulez-vous :\n1. Charger un Vagrant file\n2. Charger un fichier JSON")
                 choice = input().lower()
                 if choice == '1': # Vagrant File
-                    # FONCTION VAGRANT TO JSON -> AMAURY
+                    path = choose_box_configuration() # Select file
+                    if path != "null":
+                        json_text = convertVAGRANTFILEtoJSON(path)
+                        setJSON(current_path_auto_save, json_text) # save in file
+                        current_path_save = current_path_auto_save # change current path
+                    else: # No file selected
+                        print("\nAucun fichier sélectionné.\n")
+                        return choose_current_infra()
                     not_valid_2 = False
                 elif choice == '2': # JSON File
-                    configFile = choose_box_configuration() # Choose file
+                    configFile = choose_box_configuration() # Select file
                     if configFile != "null":
                         current_path_save = configFile
-                    else: # No file was selected
+                    else: # No file selected
                         print("\nAucun fichier sélectionné.\n")
                         return choose_current_infra()
                     not_valid_2 = False
@@ -73,7 +78,7 @@ def choose_current_infra():
         elif choice == '5': # Quit the program
             exit()
         else:
-            sys.stdout.write("Merci de répondre par '1' ou '2'\n\n")
+            sys.stdout.write("Merci de répondre par un chiffre entre 1 et 5\n\n")
 
 
 def load_infra():
@@ -127,19 +132,21 @@ def read_infra():
         return modify_infra() # Error: Back to main menu
     return json_file
 
-def update_infra(json_file):
+def update_infra(path, json_file):
     """
     Update the auto save file with the new value of the JSON dictionary.
     1. Open the file
     2. Check syntax
     3. Create JSON dictionary
 
+    @param `path`: The location to save the content of the JSON ditionary
+
     @param `json_file`: Dictionary containing the current infrastructure
 
     @return: No return
     """
    
-    with open(current_path_auto_save, "w") as outputFile: # Update the auto save file with json_file modifications
+    with open(path, "w") as outputFile: # Update the auto save file with json_file modifications
 	    outputFile.write(json.dumps(json_file, indent=2))
 
 def choose_box_configuration():
@@ -159,7 +166,8 @@ def choose_box_configuration():
     #Choose the configuration file to open
     input("\nLe chemin absolu du dossier contenant le fichier de configuration à intégrer (chemin/nom-répertoire-parent/nom-fichier) va vous être demandé. ENTER pour ouvrir l'interface de choix.")
     try: # Choose a file location
-        configFile = filedialog.askopenfilename(filetypes = [("JSON file", ".json")], title = "Choisir le fichier à ouvrir")
+        #configFile = filedialog.askopenfilename(filetypes = [("JSON file", ".json")], title = "Choisir le fichier à ouvrir")
+        configFile = filedialog.askopenfilename(title = "Choisir le fichier à ouvrir")
         print("\nFichier choisi : " + configFile)
     except:
         error = True
@@ -335,7 +343,7 @@ def add_boxes():
                 for i in res:
                     json_file[i] = res.get(i) # Add entry to dictionary variable
                 print("\nInfrastructure modifiée avec succès.")
-                update_infra(json_file) # save new infrastructure
+                update_infra(current_path_auto_save, json_file) # save new infrastructure
             except SyntaxError:
                 print("\nProblème de syntaxe dans le fichier json importé. Infrastructure non modifiée.")
 
@@ -353,7 +361,8 @@ def delete_boxes():
     json_file = read_infra() # current infrastructure
     existing_boxes = []
     for key, value in json_file.items():
-        existing_boxes.append(key) # list of current boxes
+        if key != "intro": # We don't want to delete this key
+            existing_boxes.append(key) # list of current boxes
     for box in existing_boxes:
         not_valid = True
         while not_valid:
@@ -366,7 +375,7 @@ def delete_boxes():
                 not_valid = False
             else:
                 sys.stdout.write("\nMerci de répondre par 'oui' ou 'non'\n\n")
-    update_infra(json_file) # save new infrastructure
+    update_infra(current_path_auto_save, json_file) # save new infrastructure
    
 def save_infra():
     """
@@ -433,12 +442,34 @@ def compile_vagrant(txt_edit,txt_edit_vagrant):
     """
 
     text = txt_edit.get(1.0, tk.END) # Read text from the left panel of the editor 
-    txt_edit_vagrant.delete(1.0, tk.END) # Delete any existing content
-    txt_edit_vagrant.insert(tk.END, text.upper()) # Compile in Vagrant file and show in the right panel of the editor
-    
     text = str(text).replace("\\n","").replace(" ","") # Clean file content
-    res = ast.literal_eval(text) # Transform in JSON format
-    update_infra(res) # Save current infrastructure
+    txt_edit_vagrant.delete(1.0, tk.END) # Delete any existing content
+
+    try: # Check the syntax of the JSON text
+        res = ast.literal_eval(text) # Convert it to JSON
+        update_infra(current_path_auto_save_tmp, res) # Save current infrastructure in tmp file
+        txt_edit_vagrant.insert(tk.END, convertJSONtoVAGRANTFILE(current_path_auto_save_tmp)) # Compile in Vagrant file and show in the right panel of the editor        
+    except SyntaxError:
+        txt_edit_vagrant.insert(tk.END, "Erreur de syntaxe. Impossible de transformer en Vagrant File.") # Error message
+
+def exit_editor(editor, txt_edit):
+    """
+    Check if the current JSON representation has the right syntax before exiting. If not, the changes will be discarded.
+
+    @param `editor`: Tkinter window to close
+    @param `txt_edit`: Text tkinter widget that contains the JSON representation
+    
+    @return: No return
+    """
+
+    text = txt_edit.get(1.0, tk.END) # Read text from the left panel of the editor 
+    text = str(text).replace("\\n","").replace(" ","") # Clean file content
+    try: # Check the syntax of the JSON text
+        res = ast.literal_eval(text) # Convert it to JSON
+        update_infra(current_path_auto_save, res) # Save current infrastructure in save file
+    except SyntaxError:
+        print("\nErreur de syntaxe dans le fichier modifié. Les modifications ne sont pas prises en compte.\nChoisissez une option :")
+    editor.destroy()
 
 def edit_infra():
     """
@@ -460,11 +491,13 @@ def edit_infra():
     editor.columnconfigure(1, minsize=600, weight=1)
     editor.columnconfigure(2, minsize=600, weight=1)
 
+    editor.protocol("WM_DELETE_WINDOW", True)
+
     txt_edit = tk.Text(editor) # JSON editor
     txt_edit_vagrant = tk.Text(editor) # Vagrant file representation
     fr_buttons = tk.Frame(editor)
     btn_compile = tk.Button(fr_buttons, text="Compiler", command=lambda: compile_vagrant(txt_edit,txt_edit_vagrant))
-    btn_quit = tk.Button(fr_buttons, text="Terminer", command=lambda: editor.destroy())
+    btn_quit = tk.Button(fr_buttons, text="Terminer", command=lambda: exit_editor(editor, txt_edit))
 
     btn_compile.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
     btn_quit.grid(row=1, column=0, sticky="ew", padx=5)
@@ -473,8 +506,8 @@ def edit_infra():
     txt_edit.grid(row=0, column=1, sticky="nsew")
     txt_edit_vagrant.grid(row=0, column=2, sticky="nsew")
 
-    txt_edit.delete(1.0, tk.END) # delete any existing content
     txt_edit.insert(tk.END, json.dumps(json_file, indent=2)) # insert the content of the current infrastructure
+    txt_edit_vagrant.insert(tk.END, convertJSONtoVAGRANTFILE(current_path_auto_save)) # insert the content of the current infrastructure
 
 def display_infra():
     """
@@ -501,19 +534,26 @@ def display_infra():
     txt_edit_vagrant.grid(row=0, column=1, sticky="nsew")
 
     txt_edit.insert(tk.END, json.dumps(json_file, indent=2)) # insert the content of the current infrastructure
-    txt_edit_vagrant.insert(tk.END, json.dumps(json_file, indent=2).upper()) # insert the content of the current infrastructure
+    txt_edit_vagrant.insert(tk.END, convertJSONtoVAGRANTFILE(current_path_auto_save)) # insert the content of the current infrastructure
 
-# A FINIR DEMANDER A AMAURY
-def launch_infra():
+def check_infra():
     """
-    
+    Check the syntax of the JSON file before transformation in Vagrant File.
+    1. Convert JSON to Vagrant representation
+    2. Create Vagrant File
+    3. Exit the program
 
     @param: No parameters
     
     @return: No return
     """
 
-    print("Lancer infra")
+    vagrantText = convertJSONtoVAGRANTFILE(current_path_auto_save) # Convert to Vagrant File representation
+    result = setVAGRANTFILE("VagrantFile", vagrantText) # Create Vagrant File
+    print("\nVotre fichier Vagrant File a bien été validé et créé.\n")
+    print("Après la fermeture de ce programme, vous pourrez utiliser les commandes suivantes pour intéragir avec elle :")
+    print("'Vagrant up' pour la lancer\n'Vagrant restart' pour la redémarrer\n'Vagrant stop' pour la stopper")
+    exit()
 
 def quit_program():
     """
@@ -524,7 +564,7 @@ def quit_program():
     @return: No return
     """
 
-    print("Fermeture du programme")
+    print("\nFermeture du programme")
     exit()
 
 def menu(arg):
@@ -543,7 +583,7 @@ def menu(arg):
         4: destroy_infra,
         5: edit_infra,
         6: display_infra,
-        7: launch_infra,
+        7: check_infra,
         8: quit_program
     }
     f = switcher.get(arg) # Get the right function from the dictionary
@@ -574,7 +614,7 @@ def modify_infra():
         print("4 - Détruire l'infrastructure existante")
         print("5 - Editer infrastructure existante")
         print("6 - Afficher infrastructure existante")
-        print("7 - Lancer infrastructure")
+        print("7 - Valider infrastructure")
         print("8 - Quitter le programme")
         choice = input()
         try:
