@@ -8,9 +8,6 @@ from tkinter import filedialog
 from compiler import convertJSONtoVAGRANTFILE, setVAGRANTFILE
 from decompiler import convertVAGRANTFILEtoJSON, setJSON
 
-# COMMENTAIRES get_input, copytree, create_new_box -> Amaury
-# CREER FICHIER JSON INFRA PAR DEFAUT ET CHANGER VALEUR dans choose_current_infra -> Amaury a le fichier
-
 # Global variables that contains the path to the saves
 current_path_save = ""
 current_path_auto_save = "Saves/autoSave/autoSave.json"
@@ -47,8 +44,7 @@ def choose_current_infra():
             print()
         elif choice == '3': # Default infrastructure
             print("\nChargement de l'infrastructure par défaut.")
-            #CHANGER AVEC LE NOM DU FICHIER AVEC L'INFRA PAR DEFAUT
-            current_path_save = "Saves/infra.json"
+            current_path_save = "Saves/DefaultInfrastructure.json"
             not_valid = False
         elif choice == '4': # Import file
             while not_valid_2:
@@ -163,10 +159,8 @@ def choose_box_configuration():
     """
 
     error = False
-    #Choose the configuration file to open
     input("\nLe chemin absolu du dossier contenant le fichier de configuration à intégrer (chemin/nom-répertoire-parent/nom-fichier) va vous être demandé. ENTER pour ouvrir l'interface de choix.")
     try: # Choose a file location
-        #configFile = filedialog.askopenfilename(filetypes = [("JSON file", ".json")], title = "Choisir le fichier à ouvrir")
         configFile = filedialog.askopenfilename(title = "Choisir le fichier à ouvrir")
         print("\nFichier choisi : " + configFile)
     except:
@@ -185,20 +179,20 @@ def choose_box_configuration():
         print("\nAucun fichier sélectionné. Infrastructure non modifiée.")
         return "null"
 
-# DEMANDER A AMAURY
 def get_input(question, option="False",error="Veuillez entrer le format attendu de données !"):
     """
-    
+    Function asking a customizable question to the user, checking his answer according to customizable 
+    expected options and displaying a customizable error message if necessary.
 
-    @param `question`:  
+    @param `question`: string with the custom question  
     
-    @param `option`: 
+    @param `option`: string with the custom format of expected response
     
-    @param `error`: 
+    @param `error`: string with the custom error message
     
-    @return `function get_input`: 
+    @return `get_input`: function recall if input error
     
-    @return `entry_input`: 
+    @return `entry_input`: string with the response if no input error
     """
 
     entry_input = input(question)
@@ -254,18 +248,17 @@ def enter_new_box():
         print("\nAucun fichier sélectionné. Infrastructure non modifiée.")
         return ("null", "null", "null")
 
-# DEMANDER A AMAURY
 def copytree(src, dst, symlinks=False, ignore=None):
     """
-    
+    Function copying a json to another.
 
-    @param `src`: 
+    @param `src`: string with the source path
     
-    @param `dst`:
+    @param `dst`: string with the destination path
     
-    @param `symlinks`:
+    @param `symlinks`: boolean (True if symbolic links are activated else False)
     
-    @param `ignore`:
+    @param `ignore`: callable that will receive as its arguments the directory being visited by copytree(), and a list of its contents
     
     @return: No return
     """
@@ -274,11 +267,10 @@ def copytree(src, dst, symlinks=False, ignore=None):
         s = os.path.join(src, item)
         d = os.path.join(dst, item)
         if os.path.isdir(s):
-            shutil.copytree(s, d, symlinks, ignore)
+            shutil.copytree(s, d, symlinks, ignore) # Copy if it is a directory
         else:
-            shutil.copy2(s, d)
+            shutil.copy2(s, d) # Copy if it is a file
 
-# DEMANDER A AMAURY
 def create_new_box(start_path,end_path,version):
     """
     Create the tree structure for the new Vagrant box and move files to the Vagrant boxes repository.
@@ -293,13 +285,13 @@ def create_new_box(start_path,end_path,version):
     """
 
     print("\nCréation de l'arborescence... ",end="")
-    end_path += "/"+version+"/virtualbox" # ?
-    os.makedirs(end_path) # ?
+    end_path += "/"+version+"/virtualbox" # Complete the file path
+    os.makedirs(end_path) # Create all directories
     print("ok")
     print("Déplacement des fichiers... ",end="")
-    copytree(start_path,end_path) # ?
+    copytree(start_path,end_path) # Move all files to end path
     print("ok")
-    os.listdir(end_path) # ?
+    # os.listdir(end_path) # ls -l (debug only)
 
 def add_boxes():
     """
