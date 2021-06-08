@@ -2,9 +2,9 @@ all:
 	@echo "Liste des commandes :"
 	@echo "---------------------"
 	@echo "make run                         : exécution du programme"
-	@echo "make vagrant opt='option'        : exécution de vagrant avec l'option voulu "
-	@echo "make clean                       : suppression de DetectionLab, de la documentation et des fichiers temporaires"
-	@echo "make clear                       : clean + suppression de DectectionLab"
+	@echo "make vagrant opt='option'        : exécution de vagrant avec l'option voulu (exemple : \"make vagrant opt='up'\")"
+	@echo "make clean                       : suppression de la documentation et des fichiers temporaires"
+	@echo "make clear                       : clean + suppression de DetectionLab"
 	@echo "make doc                         : génération de la documentation"
 	@echo "make readme                      : affichage du README"
 run: 
