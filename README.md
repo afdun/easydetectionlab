@@ -61,8 +61,8 @@ Avant d'aller plus loin, ne pas hésiter à vérifier sa configuration de vagran
 
 ### Importer une infrastructure
 
-Quelques soient l'usage voulu, il faut charger une infrastructure. Deux options s'offrent à l'utilisateur.
-* L'option n°3 "**Charger l’infrastructure par défaut**" permet d'importer le fichier JSON contenant l’infrastructure par défaut.
+Quel que soit l'usage voulu, il faut charger une infrastructure. Deux options s'offrent à l'utilisateur.
+* L'option n°3 "**Charger l’infrastructure par défaut**" permet d'importer le fichier JSON contenant l’infrastructure par défaut (placé dans Saves/autoSave).
 * L'option n°4 "**Importer une infrastructure existante**" va demander à l’utilisateur de choisir entre l’import d’un fichier VagrantFile ou d’un fichier JSON.
 
 
@@ -77,10 +77,10 @@ Quelques soient l'usage voulu, il faut charger une infrastructure. Deux options 
 
 Attention, la syntaxe du VagrantFile importé doit respecter un format précis en raison de sa transformation ultérieure en JSON. 
 * Ainsi, le fichier doit contenir un `Vagrant.configure("2") do |config|` et un `end` englobant le reste de la configuration. 
-* Les lignes de déclaration de variables sont autorisées en dehors de ce carcan mais seulement au début du fichier.
-* Pour définir une machine virtuelle, `config.vm.define "NOM-VM" do |cfg|`.
+* Les lignes de déclaration de variables sont autorisées en dehors de ces balises mais seulement au début du fichier.
+* Pour définir une machine virtuelle, utiliser `config.vm.define "NOM-VM" do |cfg|`.
 * En dehors de cette dernière, les autres lignes de configuration devront avoir `cfg` et non `config` au début.
-* Définir un `provider` sera nécessaire pour paramétrer la VM. Pour le moment, seul `virtualbox` est accepté.
+* Définir un `provider` sera nécessaire pour paramétrer la VM. Pour le moment, seul `virtualbox` sera lu.
 * L'indentation d'un VagrantFile se fait avec deux espaces.
 
 
@@ -88,11 +88,11 @@ Attention, la syntaxe du VagrantFile importé doit respecter un format précis e
 
 #### Menu d'édition
 
-Après avoir choisi l'infrastructure à éditer, se présentera le menu d'édition.
+Après avoir choisi l'infrastructure à éditer, le menu d'édition apparaîtra.
 
 ![Menu d’édition](https://user-images.githubusercontent.com/34754768/121227356-bf465900-c88b-11eb-9d49-9bfdbc11de5f.png)
 
-Là encore, plusieurs options possibles.
+Là encore, plusieurs options sont possibles.
 
 
 #### Option 1 : Ajouter une/des box à l’infrastructure existante
