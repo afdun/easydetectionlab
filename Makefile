@@ -4,6 +4,7 @@ all:
 	@echo "make run                         : exécution du programme"
 	@echo "make vagrant opt='option'        : exécution de vagrant avec l'option voulu "
 	@echo "make clean                       : suppression de DetectionLab, de la documentation et des fichiers temporaires"
+	@echo "make clear                       : clean + suppression de DectectionLab"
 	@echo "make doc                         : génération de la documentation"
 	@echo "make readme                      : affichage du README"
 run: 
@@ -15,8 +16,12 @@ vagrant:
 	@vagrant -opt $(opt)
 
 clean:
-	@rm -rf doc/ __pycache__/ Saves/autoSave/* DETECTIONLAB/DetectionLab/
+	@rm -rf doc/ __pycache__/ Saves/autoSave/* tmp/*
 	@echo "Nettoyage réalisé avec succès !"
+
+clear: clean
+	@rm -rf DETECTIONLAB/DetectionLab/
+	@echo "Nettoyage complet réalisé avec succès !"
 
 doc:
 	@pdoc3 --html compiler.py decompiler.py modify_infra.py -o doc
