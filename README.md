@@ -2,13 +2,13 @@
 
 ## Table des matières
 
-* [Description](description)
-* [Prérequis](prérequis)
-* [Pré-installation](pré-installation)
-* [Commandes du Makefile](commandes-du-makefile)
-* [Installation](installation)
-* [Utilisation](utilisation)
-* [Crédits](crédits)
+* [Description](#description)
+* [Prérequis](#prérequis)
+* [Pré-installation](#pré-installation)
+* [Commandes du Makefile](#commandes-du-makefile)
+* [Installation](#installation)
+* [Utilisation](#utilisation)
+* [Crédits](#crédits)
 
 ## Description
 
