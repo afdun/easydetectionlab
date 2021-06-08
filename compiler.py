@@ -99,9 +99,9 @@ def convertJSONtoVAGRANTFILE(jsonFileName):
 
 # MAIN
 if __name__ == "__main__":
-    jsonFileName = "infra.json"
-    vagrantFileName = "VagrantFile"
-    vagrantText = convertJSONtoVAGRANTFILE(jsonFileName)
-    # print(vagrantText)
-    result = setVAGRANTFILE(vagrantFileName, vagrantText)
+    jsonFileName = "Saves/DefaultInfrastructure.json" # Source file
+    vagrantFileName = "tmp/Vagrantfile" # End file
+    vagrantText = convertJSONtoVAGRANTFILE(jsonFileName) # Conversion of source file into vagrant
+    # print(vagrantText) # For debug only
+    result = setVAGRANTFILE(vagrantFileName, vagrantText) # Set the conversion result in the end file
     print("Ecriture du fichier ", vagrantFileName, " : ", result)

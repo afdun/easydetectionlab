@@ -163,8 +163,8 @@ def convertVAGRANTFILEtoJSON(vagrantFileName):
 
 
 if __name__ == "__main__":
-    vagrantFileName = "TEMP-vagrantfile"
-    jsonFileName = "TEMP-jsonfile.json"
+    vagrantFileName = "Saves/MODEL-VagrantFile"
+    jsonFileName = "tmp/jsonfile.json"
     result1 = verifIndent(vagrantFileName)
     print("Vérification de l'indentation : ", result1)
     if result1 == True:
