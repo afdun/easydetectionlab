@@ -1,7 +1,14 @@
 # Easy Detection Lab
 
 ## Table des matières
-A venir...
+
+* [Description](description)
+* [Prérequis](prérequis)
+* [Pré-installation](pré-installation)
+* [Commandes du Makefile](commandes-du-makefile)
+* [Installation](installation)
+* [Utilisation](utilisation)
+* [Crédits](crédits)
 
 ## Description
 
@@ -156,5 +163,7 @@ Option permettant de vérifier la syntaxe de l’infrastructure actuelle. S’il
 ### Option 8 : Quitter le programme
 Option qui permet de terminer le programme.
 
-Conclusion
-Dans ce chapitre, nous avons mis l’accent sur l’explication détaillée de notre travail en expliquant à la fois notre environnement de travail ainsi que le rendu utilisateur que notre programme propose.
+
+# Crédits
+
+Programme conçu par Audrey et Amaury dans le cadre d'un projet de fin d'études.
