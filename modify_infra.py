@@ -38,7 +38,7 @@ def choose_current_infra():
         choice = input().lower()
         if choice == '1': #Install DetectionLab
             print()
-            os.system("git clone https://github.com/clong/DetectionLab.git")
+            os.system("cd DETECTIONLAB && git clone https://github.com/clong/DetectionLab.git")
             print()
         elif choice == '2': # Check required configuration
             input("\nSoyez sûr que DETECTIONLAB/DetectionLab/Vagrant/prepare.sh ait bien les droits d'exécution (chmod u+x prepare.sh). ENTER pour continuer")
