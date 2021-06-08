@@ -37,9 +37,11 @@ def choose_current_infra():
         print("Voulez-vous :\n1. Installer Detection Lab\n2. Vérifier configuration requise\n3. Charger l'infrastructure par défaut\n4. Importer une infrastructure existante\n5. Quitter")
         choice = input().lower()
         if choice == '1': #Install DetectionLab
+            print()
             os.system("git clone https://github.com/clong/DetectionLab.git")
+            print()
         elif choice == '2': # Check required configuration
-            input("Soyez sûr que DETECTIONLAB/DetectionLab/Vagrant/prepare.sh ait bien les droits d'exécution (chmod u+x prepare.sh). ENTER pour continuer")
+            input("\nSoyez sûr que DETECTIONLAB/DetectionLab/Vagrant/prepare.sh ait bien les droits d'exécution (chmod u+x prepare.sh). ENTER pour continuer")
             os.system("./DETECTIONLAB/DetectionLab/Vagrant/prepare.sh")
             print()
         elif choice == '3': # Default infrastructure
