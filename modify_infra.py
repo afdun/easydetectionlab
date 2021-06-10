@@ -93,7 +93,7 @@ def load_infra():
     
     with open(current_path_save, "r") as outputFile: # Read file of the chosen infrastructure
 	    contentFile = outputFile.read()
-    strContentFile = str(contentFile).replace("\\n","").replace("'", "").replace(" ","") # Clean file content
+    strContentFile = str(contentFile).replace("\\n","").replace(" ","") # Clean file content
 
     try: #Check the syntax of the file
         res = ast.literal_eval(strContentFile) # Convert it to JSON
@@ -119,7 +119,7 @@ def read_infra():
     json_file = {}
     with open(current_path_auto_save, "r") as outputFile: # Read auto save file
 	    contentFile = outputFile.read()
-    strContentFile = str(contentFile).replace("\\n","").replace("'", "").replace(" ","") # Clean file content
+    strContentFile = str(contentFile).replace("\\n","").replace(" ","") # Clean file content
 
     try: # Transform string to dict
         res = ast.literal_eval(strContentFile) # Convert it to JSON
