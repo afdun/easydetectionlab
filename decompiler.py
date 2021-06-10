@@ -138,9 +138,9 @@ def convertVAGRANTFILEtoJSON(vagrantFileName):
                     else:
                         if nameParamVM == "provision":
                             if nameParamVM not in newVM[vmOrWinrm]:
-                                newVM[vmOrWinrm][nameParamVM] = [paramVM]
+                                newVM[vmOrWinrm][nameParamVM] = [paramVM.replace("\'","\'")]
                             else:
-                                newVM[vmOrWinrm][nameParamVM].append(paramVM)
+                                newVM[vmOrWinrm][nameParamVM].append(paramVM.replace("\'","\'"))
                         else:
                             newVM[vmOrWinrm][nameParamVM] = paramVM
 
@@ -150,7 +150,7 @@ def convertVAGRANTFILEtoJSON(vagrantFileName):
 
                 if matchObject:
                     nameParamVB = matchObject.group(1).strip()
-                    paramVB = matchObject.group(2).strip()
+                    paramVB = matchObject.group(2).strip().replace("\'","\'")
                     if nameParamVB == "customize":
                         if nameParamVB not in newVB:
                             newVB[nameParamVB] = [paramVB]

@@ -242,7 +242,7 @@ Vagrant.configure("2") do |config|
     end
   end
   
-   config.vm.define "misp" do |cfg|
+  config.vm.define "misp" do |cfg|
     cfg.vm.box = "ubuntu/bionic64"
     cfg.vm.hostname = "misp"
     cfg.vm.provision :shell, path: "bootstrap.sh", args: MISP_ENV.to_s

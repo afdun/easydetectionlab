@@ -44,17 +44,6 @@ def printJSON(jsonText):
     print(json.dumps(jsonText,indent=2))
 
 
-def configVM(name,config,vagrantText):
-    """
-    Function converting one item of th
-
-    @param `jsonFileName`: name of the json file to write to
-    @param `jsonText`: json text to write in the json file
-
-    @return `jsonFile.closed`: boolean (True if the json file successfully closed else False)
-    """
-    
-    return vagrantText
 
 def convertJSONtoVAGRANTFILE(jsonFileName):
     """ Function converting a json file in vagrant text
@@ -90,6 +79,8 @@ def convertJSONtoVAGRANTFILE(jsonFileName):
                         vagrantText += 4*' '+"end\n"
                     elif setting == "provider":
                         vagrantText += 4*' '+'.'.join((cfg,vm,setting))+' '+value3+' do |vb, override|\n'
+                    elif setting == "network":
+                        vagrantText += 4*' '+'.'.join((cfg,vm,setting))+' '+value3+'\n'
                     else:
                         vagrantText += 4*' '+'.'.join((cfg,vm,setting))+' = '+value3+'\n'
         vagrantText += "  end\n"
